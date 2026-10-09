@@ -1,14 +1,23 @@
-# Template for the Cray CCE Compilers on a Cray System
+# Template for the Cray Compiling Environment (CCE) on Linux, with or without the Cray PE
 #
 # Typical use with mkmf
-# mkmf -t ncrc-cray.mk -c"-Duse_libMPI -Duse_netCDF" path_names /usr/local/include
+# mkmf -t linux-cce.mk -c"-Duse_libMPI -Duse_netCDF" path_names /usr/local/include
 
 ############
 # Commands Macros
 ############
-FC = ftn
-CC = cc
-LD = ftn $(MAIN_PROGRAM)
+# Use the Cray PE compiler wrappers when a PrgEnv is loaded, otherwise use
+# the MPI compiler wrappers.  Override with MPIFC and MPICC in the environment.
+ifdef PE_ENV
+MPIFC ?= ftn
+MPICC ?= cc
+else
+MPIFC ?= mpifort
+MPICC ?= mpicc
+endif
+FC = $(MPIFC)
+CC = $(MPICC)
+LD = $(MPIFC) $(MAIN_PROGRAM)
 
 #######################
 # Build target macros
@@ -133,6 +142,12 @@ LDFLAGS_COVERAGE :=
 
 # List of -L library directories to be added to the compile and linking commands
 LIBS := $(shell pkg-config --libs yaml-0.1)
+ifndef PE_ENV
+# Outside the Cray PE, the compiler wrappers do not add the netCDF libraries
+LIBS += $(shell nc-config --libs)
+LIBS += $(shell nf-config --flibs | sed -e "s/-lnetcdf //g")
+LDFLAGS += -Wl,-rpath,$(shell nc-config --libdir):$(shell nf-config --prefix)/lib
+endif
 
 # Get compile flags based on target macros.
 ifdef REPRO

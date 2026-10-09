@@ -28,6 +28,26 @@ helper() {
    helper linux-intel.mk
 }
 
+@test "template linux-cce.mk" {
+   helper linux-cce.mk
+}
+
+@test "template linux-gcc.mk" {
+   helper linux-gcc.mk
+}
+
+@test "template linux-intel-classic.mk" {
+   helper linux-intel-classic.mk
+}
+
+@test "template linux-intel-oneapi.mk" {
+   helper linux-intel-oneapi.mk
+}
+
+@test "template linux-nvhpc.mk" {
+   helper linux-nvhpc.mk
+}
+
 @test "template linux-ubuntu-trusty-gnu.mk" {
    helper linux-ubuntu-trusty-gnu.mk
 }
