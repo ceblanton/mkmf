@@ -159,7 +159,7 @@ FFLAGS_TEST := $(FFLAGS_OPT)
 CFLAGS_TEST := $(CFLAGS_OPT)
 
 # Linking flags
-LDFLAGS := -fuse-ld=lld -Wl,-rpath,${NETCDF_DIR}/lib:${HDF5_DIR}/lib
+LDFLAGS := -Wl,-rpath,${NETCDF_DIR}/lib:${HDF5_DIR}/lib
 LDFLAGS_OPENMP := -qopenmp
 LDFLAGS_VERBOSE := -Wl,-V,--verbose,-cref,-M
 LDFLAGS_COVERAGE = -prof-gen=srcpos
@@ -171,6 +171,8 @@ ifndef PE_ENV
 LIBS += $(shell nc-config --libs)
 LIBS += $(shell nf-config --flibs | sed -e "s/-lnetcdf //g")
 LDFLAGS += -Wl,-rpath,$(shell nc-config --libdir):$(shell nf-config --prefix)/lib
+# Outside the Cray PE there is no cray-libsci, so use MKL for LAPACK
+LIBS += -qmkl=sequential
 endif
 
 # Get compile flags based on target macros.
@@ -191,7 +193,8 @@ endif
 ifdef USE_LTO
 CFLAGS += $(CFLAGS_LTO)
 FFLAGS += $(FFLAGS_LTO)
-LDFLAGS += $(FFLAGS)
+# The LTO objects from ifx need the LLVM linker
+LDFLAGS += -fuse-ld=lld $(FFLAGS)
 endif
 
 ifdef OPENMP
