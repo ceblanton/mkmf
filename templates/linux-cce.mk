@@ -102,8 +102,8 @@ FPPFLAGS += $(shell nf-config --fflags)
 FFLAGS = -s $(REAL_PRECISION) -s integer32 -h byteswapio -e m -h keepfiles -e0 -ez -N1023
 
 # Flags based on perforance target (production (OPT), reproduction (REPRO), or debug (DEBUG)
-FFLAGS_OPT = -O3 -O fp2 -G2
-FFLAGS_REPRO = -O2 -O fp2 -G2
+FFLAGS_OPT = -O3 -O fp2 -g
+FFLAGS_REPRO = -O2 -O fp2 -g
 FFLAGS_DEBUG = -g -R bc
 
 # Flags to add additional build options
