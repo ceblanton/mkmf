@@ -169,6 +169,10 @@ LIBS += $(shell nc-config --libs)
 LIBS += $(shell nf-config --flibs | sed -e "s/-lnetcdf //g")
 LDFLAGS += -Wl,-rpath,$(shell nc-config --libdir):$(shell nf-config --prefix)/lib
 endif
+# Always use sequential MKL for LAPACK. Inside the Cray PE this also keeps ftn
+# from linking cray-libsci, whose OpenMP build (libsci_mp) crashes when LAPACK
+# is called from within OpenMP parallel regions (e.g. LM4 land_model).
+LIBS += -qmkl=sequential
 
 # Get compile flags based on target macros.
 ifdef REPRO
