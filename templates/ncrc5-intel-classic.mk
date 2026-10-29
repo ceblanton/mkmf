@@ -1,1 +1,0 @@
-linux-intel-classic.mk
