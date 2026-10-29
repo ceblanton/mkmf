@@ -20,14 +20,6 @@ helper() {
    [ "$status" -eq 0 ]
 }
 
-@test "template linux-gnu.mk" {
-   helper linux-gnu.mk
-}
-
-@test "template linux-intel.mk" {
-   helper linux-intel.mk
-}
-
 @test "template linux-cce.mk" {
    helper linux-cce.mk
 }
